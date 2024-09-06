@@ -1,3 +1,3 @@
 export interface WifiConnectionManagerPlugin {
-  echo(options: { value: string }): Promise<{ value: string }>;
+    connectToWifi(options: { ssid: string; password: string }): Promise<{ result: string }>;
 }

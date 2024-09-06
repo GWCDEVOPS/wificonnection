@@ -9,14 +9,28 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 @CapacitorPlugin(name = "WifiConnectionManager")
 public class WifiConnectionManagerPlugin extends Plugin {
 
-    private WifiConnectionManager implementation = new WifiConnectionManager();
+    private WifiConnectionManager implementation;
+
+    @Override
+    public void load() {
+        // Initialize the implementation with the application context
+        implementation = new WifiConnectionManager(getContext());
+    }
 
     @PluginMethod
-    public void echo(PluginCall call) {
-        String value = call.getString("value");
+    public void connectToWifi(PluginCall call) {
+        String ssid = call.getString("ssid");
+        String password = call.getString("password");
+
+        if (ssid == null || password == null) {
+            call.reject("SSID or password is missing");
+            return;
+        }
+
+        String result = implementation.connectToWifi(ssid, password);
 
         JSObject ret = new JSObject();
-        ret.put("value", implementation.echo(value));
+        ret.put("result", result);
         call.resolve(ret);
     }
 }
